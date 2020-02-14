@@ -1,0 +1,19 @@
+{
+  "name": "desafio-concrete-api",
+  "version": "1.0.0",
+  "main": "dist/server.js",
+  "repository": "git@github.com:jrmmendes/desafio-concrete-api.git",
+  "author": "Romildo Júnior <jrmmendes@outlook.com>",
+  "license": "GPL-3",
+  "dependencies": {
+    "commitizen": "^4.0.3"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "3.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
