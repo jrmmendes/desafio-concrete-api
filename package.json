@@ -5,6 +5,13 @@
   "repository": "git@github.com:jrmmendes/desafio-concrete-api.git",
   "author": "Romildo Júnior <jrmmendes@outlook.com>",
   "license": "GPL-3",
+  "engines": {
+    "node": "12.4.1"
+  },
+  "scripts": {
+    "start":"node dist/server.js",
+    "build":"gulp build"
+  },
   "dependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/node": "^7.8.4",
