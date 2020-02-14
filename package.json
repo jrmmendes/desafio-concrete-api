@@ -17,7 +17,11 @@
     "@babel/core": "^7.8.4",
     "@babel/node": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
-    "commitizen": "^4.0.3"
+    "commitizen": "^4.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "morgan": "^1.9.1"
   },
   "devDependencies": {
     "babel-preset-minify": "^0.5.1",
