@@ -4,12 +4,19 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 import datasource from './middlewares/datasource';
+import errorHandler from './middlewares/errorHandler';
+import notFoundHandler from './middlewares/notFoundHandler';
+import requestHandler from './middlewares/requestHandler';
 
 class ApplicationController {
   constructor() {
     this.app = express();
     this.middlewares();
     this.routes();
+
+    this.app.use(notFoundHandler);
+    this.app.use(errorHandler);
+    this.app.use(requestHandler);
   }
 
   middlewares() {
