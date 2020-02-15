@@ -3,6 +3,8 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 
+import datasource from './handlers/datasource';
+
 class ApplicationController {
   constructor() {
     this.app = express();
@@ -15,6 +17,8 @@ class ApplicationController {
     this.app.use(helmet());
     this.app.use(cors());
     this.app.use(morgan('dev'));
+
+    this.app.use(datasource);
   }
 
   routes() {
