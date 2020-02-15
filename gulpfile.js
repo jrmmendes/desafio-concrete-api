@@ -24,15 +24,15 @@ const compile = (done) => {
 };
 
 // Main tasks
-const build = series(lint, compile);
+const build = series(clean, lint, compile);
 
-const watchFiles = (done) => {
+const buildWatch = (done) => {
   watch('./src/**/*.js', build);
   done();
 };
 
 module.exports = {
-  watchFiles,
+  'build:watch': buildWatch,
   build,
   compile,
   lint,
