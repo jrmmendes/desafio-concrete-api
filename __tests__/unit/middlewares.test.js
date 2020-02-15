@@ -1,0 +1,3 @@
+describe('Common Middlewares -> ErrorHandler', () => {
+
+});

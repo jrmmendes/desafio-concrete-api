@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import datasource from './handlers/datasource';
+import datasource from './middlewares/datasource';
 
 class ApplicationController {
   constructor() {
