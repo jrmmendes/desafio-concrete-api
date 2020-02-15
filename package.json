@@ -38,6 +38,7 @@
     "gulp-watch": "^5.0.1",
     "jest": "^25.1.0",
     "jest-babel": "^1.0.1",
+    "jest-json-schema": "^2.1.0",
     "supertest": "^4.0.2"
   },
   "config": {
