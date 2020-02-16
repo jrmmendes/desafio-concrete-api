@@ -14,7 +14,7 @@ const userSchema = new Schema({
     required: true,
   },
   telefones: {
-    type: [{
+    type: [new Schema({
       numero: {
         type: String,
         required: true,
@@ -23,12 +23,15 @@ const userSchema = new Schema({
         required: true,
         type: String,
       },
-    }],
+    }, { _id: false })],
   },
   ultimo_login: {
     type: Date,
     default: Date.now,
   },
-}, { timestamps: { createdAt: 'data_criacao', updatedAt: 'data_atualizacao' } });
+}, {
+  timestamps: { createdAt: 'data_criacao', updatedAt: 'data_atualizacao' },
+  versionKey: false,
+});
 
 export default model('user', userSchema);

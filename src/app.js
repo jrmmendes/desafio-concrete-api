@@ -8,6 +8,8 @@ import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
 import requestHandler from './middlewares/requestHandler';
 
+import userRoutes from './routes/users';
+
 class ApplicationController {
   constructor() {
     this.app = express();
@@ -29,9 +31,7 @@ class ApplicationController {
   }
 
   routes() {
-    this.app.get('/', (req, res) => {
-      res.send('Hello');
-    });
+    this.app.use(userRoutes);
   }
 }
 
