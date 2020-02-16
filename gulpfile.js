@@ -24,7 +24,7 @@ const compile = (done) => {
 };
 
 // Main tasks
-const build = series(clean, lint, compile);
+const build = series(lint, compile);
 
 const buildWatch = (done) => {
   watch('./src/**/*.js', build);
