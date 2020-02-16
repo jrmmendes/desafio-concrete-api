@@ -1,4 +1,7 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+import config from '../config';
 import model from '../models/user-model';
 
 export default {
@@ -55,10 +58,20 @@ export default {
         senha: hash,
       });
 
+      const userData = newUser.toObject();
+      const { appSecret, tokenExpirationTime } = config.get('security');
+      const { _id: userId } = userData;
+
+      const token = jwt.sign({ userId }, appSecret, {
+        expiresIn: tokenExpirationTime,
+      });
+
       res.locals = {
-        ...res.locals,
-        data: newUser.toObject(),
         status: 201,
+        data: {
+          ...userData,
+          token,
+        },
       };
 
       return next();

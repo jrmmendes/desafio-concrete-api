@@ -33,11 +33,12 @@ const validResponseSchema = {
     'data_criacao',
     'data_atualizacao',
     'ultimo_login',
+    'token',
   ],
 };
 
 describe('Users -> Sign Up', () => {
-  it('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
+  it.only('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
     const testUserData = {
       nome: 'Luke',
       email: 'luke@skywalker.com',
