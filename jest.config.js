@@ -5,7 +5,7 @@ module.exports = {
   testEnvironment: 'node',
   clearMocks: true,
   verbose: true,
-  coverageDirectory: '__tests__/coverage',
+  coverageDirectory: 'coverage',
   testMatch: [
     '**/__tests__/**/*.test.[jt]s?(x)',
   ],
