@@ -1,12 +1,12 @@
 import bcrypt from 'bcryptjs';
-import userModel from '../models/user-model';
+import model from '../models/user-model';
 
 export default {
   detail: async (req, res, next) => {
     try {
       const userId = req.param;
 
-      const user = await userModel.findById(userId);
+      const user = await model.findById(userId);
 
       if (!user) {
         return next({
@@ -40,7 +40,15 @@ export default {
 
       const hash = await bcrypt.hash(senha, 10);
 
-      const newUser = await userModel.create({
+      const userWithSameEmail = await model.findOne({ email });
+      if (userWithSameEmail) {
+        return next({
+          status: 400,
+          message: 'E-mail já existente',
+        });
+      }
+
+      const newUser = await model.create({
         nome,
         email,
         telefones,
