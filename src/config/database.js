@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
-import settings from './settings';
 
-export default async () => {
-  const { connectionString } = settings.get('db');
-
+export default async (connectionString) => {
   mongoose.set('useNewUrlParser', true);
   mongoose.set('useFindAndModify', false);
   mongoose.set('useCreateIndex', true);

@@ -1,23 +1,35 @@
 import request from 'supertest';
 import { matchers } from 'jest-json-schema';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
 import app from '../../src/app';
-import configureDatabase from '../../src/config/database';
+import initConnection from '../../src/config/database';
 
 expect.extend(matchers);
 
 describe('Users Endpoint -> Sign In', () => {
-  beforeAll(() => {
-    configureDatabase();
+  beforeAll(async (done) => {
+    const mongod = new MongoMemoryServer();
+    const connectionString = await mongod.getConnectionString();
+    initConnection(connectionString);
+    done();
   });
 
-  beforeEach(async () => {
+  beforeEach(async (done) => {
     await mongoose
       .connection
       .collection('users')
       .deleteMany({});
+    done();
   });
+
+  afterAll(async (done) => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+    done();
+  });
+
   it('When valid email and password on request body, expect 200 and valid response body', async (done) => {
     const testUserData = {
       nome: 'Johnny Test',

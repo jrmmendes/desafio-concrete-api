@@ -1,10 +1,11 @@
-import request from 'supertest';
 import { matchers } from 'jest-json-schema';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import request from 'supertest';
 import mongoose from 'mongoose';
 
 import app from '../../src/app';
 import model from '../../src/models/user-model';
-import configureDatabase from '../../src/config/database';
+import initConnection from '../../src/config/database';
 
 expect.extend(matchers);
 
@@ -40,15 +41,25 @@ const validResponseSchema = {
 };
 
 describe('Users -> Sign Up', () => {
-  beforeAll(() => {
-    configureDatabase();
+  beforeAll(async (done) => {
+    const mongod = new MongoMemoryServer();
+    const connectionString = await mongod.getConnectionString();
+    initConnection(connectionString);
+    done();
   });
 
-  beforeEach(async () => {
+  beforeEach(async (done) => {
     await mongoose
       .connection
       .collection('users')
       .deleteMany({});
+    done();
+  });
+
+  afterAll(async (done) => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+    done();
   });
 
   it('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {

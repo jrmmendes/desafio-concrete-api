@@ -26,6 +26,7 @@
     "express": "^4.17.1",
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.3",
     "mongoose": "^5.9.1",
     "morgan": "^1.9.1",
     "passport": "^0.4.1",
@@ -46,6 +47,7 @@
     "jest": "^25.1.0",
     "jest-babel": "^1.0.1",
     "jest-json-schema": "^2.1.0",
+    "mongodb-memory-server": "^6.2.4",
     "supertest": "^4.0.2"
   },
   "config": {

@@ -6,7 +6,7 @@ module.exports = {
   clearMocks: true,
   verbose: true,
   coverageDirectory: 'coverage',
-  coverageReporters: ["lcov"],
+  coverageReporters: ['lcov'],
   testMatch: [
     '**/__tests__/**/*.test.[jt]s?(x)',
   ],
