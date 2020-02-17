@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import config from '../config';
+import settings from '../config/settings';
 import model from '../models/user-model';
 
 export default {
@@ -59,7 +59,7 @@ export default {
       });
 
       const userData = newUser.toObject();
-      const { appSecret, tokenExpirationTime } = config.get('security');
+      const { appSecret, tokenExpirationTime } = settings.get('security');
       const { _id: userId } = userData;
 
       const token = jwt.sign({ userId }, appSecret, {

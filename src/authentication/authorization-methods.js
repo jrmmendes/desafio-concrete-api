@@ -1,6 +1,6 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
 
-import config from '../config';
+import settings from '../config/settings';
 import model from '../models/user-model';
 
 export const validateUser = async (request, jwtPayload, done) => {
@@ -18,8 +18,9 @@ export const validateUser = async (request, jwtPayload, done) => {
 
 export const authorize = (passport) => {
   const options = {};
+  const { appSecret } = settings.get('security');
   options.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-  options.secretOrKey = config.get('app_secret');
+  options.secretOrKey = appSecret;
   options.passReqToCallback = true;
 
   passport.use(new Strategy(options, validateUser));

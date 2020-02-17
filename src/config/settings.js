@@ -22,13 +22,7 @@ export default convict({
     },
   },
   db: {
-    testUrl: {
-      doc: 'The test database connection string',
-      format: String,
-      default: 'mongodb://root:toor@localhost:27017/test-db?authSource=admin',
-      env: 'DATABASE_TEST_URL',
-    },
-    url: {
+    connectionString: {
       doc: 'The database connection string',
       format: String,
       default: 'mongodb://root:toor@localhost:27017/development-db?authSource=admin',
