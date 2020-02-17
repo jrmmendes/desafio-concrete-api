@@ -1,8 +1,10 @@
 import request from 'supertest';
 import { matchers } from 'jest-json-schema';
+import mongoose from 'mongoose';
 
 import app from '../../src/app';
 import model from '../../src/models/user-model';
+import configureDatabase from '../../src/config/database';
 
 expect.extend(matchers);
 
@@ -38,7 +40,18 @@ const validResponseSchema = {
 };
 
 describe('Users -> Sign Up', () => {
-  it.only('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
+  beforeAll(() => {
+    configureDatabase();
+  });
+
+  beforeEach(async () => {
+    await mongoose
+      .connection
+      .collection('users')
+      .deleteMany({});
+  });
+
+  it('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
     const testUserData = {
       nome: 'Luke',
       email: 'luke@skywalker.com',
@@ -56,10 +69,6 @@ describe('Users -> Sign Up', () => {
 
     expect(response.status).toBe(201);
     expect(response.body).toMatchSchema(validResponseSchema);
-
-    const { _id: userId } = response.body;
-    await model.findByIdAndRemove(userId);
-
     done();
   });
 

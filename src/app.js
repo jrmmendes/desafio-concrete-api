@@ -3,7 +3,6 @@ import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
 
-import datasource from './middlewares/datasource';
 import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
 import requestHandler from './middlewares/requestHandler';
@@ -26,8 +25,6 @@ class ApplicationController {
     this.app.use(helmet());
     this.app.use(cors());
     this.app.use(morgan('dev'));
-
-    this.app.use(datasource);
   }
 
   routes() {

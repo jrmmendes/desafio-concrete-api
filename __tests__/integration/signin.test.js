@@ -1,10 +1,23 @@
 import request from 'supertest';
 import { matchers } from 'jest-json-schema';
+import mongoose from 'mongoose';
+
 import app from '../../src/app';
+import configureDatabase from '../../src/config/database';
 
 expect.extend(matchers);
 
 describe('Users Endpoint -> Sign In', () => {
+  beforeAll(() => {
+    configureDatabase();
+  });
+
+  beforeEach(async () => {
+    await mongoose
+      .connection
+      .collection('users')
+      .deleteMany({});
+  });
   it('When valid email and password on request body, expect 200 and valid response body', async (done) => {
     const testUserData = {
       nome: 'Johnny Test',
