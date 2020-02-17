@@ -105,8 +105,8 @@ describe('Users -> Sign Up', () => {
       .send(testUserData);
 
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('message');
-    expect(response.body.message).toBe('E-mail já existente');
+    expect(response.body).toHaveProperty('mensagem');
+    expect(response.body.mensagem).toBe('E-mail já existente');
 
     const { _id: userId } = resp1.body;
     await model.findByIdAndRemove(userId);

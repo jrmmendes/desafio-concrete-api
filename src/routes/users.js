@@ -5,6 +5,14 @@ const router = Router();
 
 router
   .route('/sign-up')
-  .post(userController.create);
+  .post(
+    userController.signUp
+  );
+
+router
+  .route('/sign-in')
+  .post(
+    userController.signIn,
+  );
 
 export default router;

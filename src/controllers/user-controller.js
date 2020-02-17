@@ -5,23 +5,43 @@ import settings from '../config/settings';
 import model from '../models/user-model';
 
 export default {
-  detail: async (req, res, next) => {
+  signIn: async (req, res, next) => {
     try {
-      const userId = req.param;
+      const { email, senha } = req.body;
 
-      const user = await model.findById(userId);
+      const user = await model.findOne({ email });
 
       if (!user) {
         return next({
-          status: 404,
-          data: `O usuário com id ${userId} não foi encontrado`,
+          status: 401,
+          message: 'Usuário e/ou senha inválidos',
         });
       }
+
+      const hash = user.senha;
+
+      if (!await bcrypt.compare(senha, hash)) {
+        return next({
+          status: 401,
+          message: 'Usuário e/ou senha inválidos',
+        });
+      }
+
+      const userData = user.toObject();
+      const { appSecret, tokenExpirationTime } = settings.get('security');
+      const { _id: userId } = userData;
+
+      const token = jwt.sign({ userId }, appSecret, {
+        expiresIn: tokenExpirationTime,
+      });
 
       res.locals = {
         ...res.locals,
         status: 200,
-        data: user,
+        data: {
+          ...userData,
+          token,
+        },
       };
 
       return next();
@@ -32,7 +52,7 @@ export default {
       });
     }
   },
-  create: async (req, res, next) => {
+  signUp: async (req, res, next) => {
     try {
       const {
         nome,

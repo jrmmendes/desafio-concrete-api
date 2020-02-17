@@ -30,7 +30,7 @@ describe('Users Endpoint -> Sign In', () => {
     done();
   });
 
-  it('When valid email and password on request body, expect 200 and valid response body', async (done) => {
+  it('When valid email and password on request to /sign-in, expect 200 and valid response body', async (done) => {
     const testUserData = {
       nome: 'Johnny Test',
       email: 'johnny@mail.com',
@@ -99,11 +99,11 @@ describe('Users Endpoint -> Sign In', () => {
     };
 
     const response = await request(app)
-      .post('/users/sign-in')
+      .post('/sign-in')
       .send(invalidLoginCredentials);
 
     expect(response.status).toBe(401);
-    expect(response.body.error).toBe('Usuário e/ou senha inválidos');
+    expect(response.body.mensagem).toBe('Usuário e/ou senha inválidos');
     done();
   });
 
@@ -134,7 +134,7 @@ describe('Users Endpoint -> Sign In', () => {
       .send(invalidLoginCredentials);
 
     expect(response.status).toBe(401);
-    expect(response.body.error).toBe('Usuário e/ou senha inválidos');
+    expect(response.body.mensagem).toBe('Usuário e/ou senha inválidos');
     done();
   });
 });

@@ -54,8 +54,8 @@ describe('Error Handler -> Formatting error data', () => {
 
     errorHandler(error, req, res, next);
 
-    expect(res.locals.data).toHaveProperty('message');
-    expect(res.locals.data.message).toBe('Serviço indisponível. Tente novamente mais tarde.');
+    expect(res.locals.data).toHaveProperty('mensagem');
+    expect(res.locals.data.mensagem).toBe('Serviço indisponível. Tente novamente mais tarde.');
     expect(res.locals.status).toBe(500);
     expect(next).toBeCalledTimes(1);
   });

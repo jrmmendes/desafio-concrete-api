@@ -1,11 +1,12 @@
+
 import app from './app';
-import initConnection from './config/database';
+import initDatabase from './config/database';
 import settings from './config/settings';
 
 const port = process.env.PORT || 3000;
 
 const { connectionString } = settings.get('db');
 
-initConnection(connectionString);
+initDatabase(connectionString);
 
 app.listen(port, () => console.log('Ready @ ', port));
