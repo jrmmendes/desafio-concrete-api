@@ -8,44 +8,34 @@ export default {
   search: async (req, res, next) => {
     try {
       const { accessToken } = req;
-
-      if (!accessToken) {
-        return next({
-          status: 401,
-          message: 'Não autorizado',
-        });
-      }
-
       const { id } = req.params;
       const user = await model.findById(id);
 
-      if (!await bcrypt.compare(user.token, accessToken)) {
-        return next({
-          status: 401,
-          message: 'Não autorizado',
-        });
+      const isTokenValid = await bcrypt.compare(user.token, accessToken);
+
+      if (isTokenValid) {
+        const minutesSinceLastLogin = (
+          Date.now()
+          - user.ultimo_login.getTime()
+        ) / 60000;
+
+        if (minutesSinceLastLogin > 30) {
+          return next({
+            status: 401,
+            message: 'Sessão inválida',
+          });
+        }
+        res.locals = {
+          status: 200,
+          data: serializeUserData(user),
+        };
+        return next();
       }
 
-      const minutesSinceLastLogin = (
-        Date.now()
-        - user.ultimo_login.getTime()
-      ) / 60000;
-
-      console.log(minutesSinceLastLogin);
-
-      if (minutesSinceLastLogin > 30) {
-        return next({
-          status: 401,
-          message: 'Sessão inválida',
-        });
-      }
-
-      res.locals = {
-        status: 200,
-        data: serializeUserData(user),
-      };
-
-      return next();
+      return next({
+        status: 401,
+        message: 'Não autorizado',
+      });
     } catch (error) {
       return next({
         status: 500,
@@ -76,10 +66,10 @@ export default {
       }
 
       const newToken = generateJwt({ email, senha });
-      const newTokenHash = await bcrypt.hash(newToken);
+      const tokenHash = await bcrypt.hash(newToken, 10);
 
       user.set('ultimo_login', Date.now());
-      user.set('token', newTokenHash);
+      user.set('token', tokenHash);
       user.save();
 
       res.locals = {
@@ -125,7 +115,7 @@ export default {
 
       res.locals = {
         status: 201,
-        data: serializeUser(newUser),
+        data: serializeUserData(newUser),
       };
 
       return next();
