@@ -1,13 +1,11 @@
-const { src, dest, series, watch } = require('gulp');
+const {
+  src,
+  dest,
+  series,
+  watch,
+} = require('gulp');
 const babel = require('gulp-babel');
 const eslint = require('gulp-eslint');
-const del = require('del');
-
-// Subtasks
-const clean = (done) => {
-  del(['./dist']);
-  done();
-};
 
 const lint = (done) => {
   src('src/**/*.js')
@@ -36,5 +34,4 @@ module.exports = {
   build,
   compile,
   lint,
-  clean,
 };
