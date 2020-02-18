@@ -9,7 +9,6 @@ import notFoundHandler from './helpers/notFoundHandler';
 import requestHandler from './helpers/requestHandler';
 
 import initSwagger from './config/swagger';
-import settings from './config/settings';
 
 import userRoutes from './routes/users';
 
@@ -19,8 +18,7 @@ class ApplicationController {
     this.middlewares();
     this.routes();
 
-    // if (settings.get('env') !== 'test') 
-    initSwagger('/', this.app);
+    initSwagger('/docs', this.app);
 
     this.app.use(notFoundHandler);
     this.app.use(errorHandler);
