@@ -7,6 +7,14 @@ export default {
   search: async (req, res, next) => {
     try {
       const { accessToken } = req;
+
+      if (!accessToken) {
+        return next({
+          status: 401,
+          message: 'Não autorizado',
+        });
+      }
+
       const { id } = req.params;
       const user = await model.findById(id);
 
