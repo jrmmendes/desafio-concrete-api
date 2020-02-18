@@ -8,7 +8,7 @@ import initConnection from '../../src/config/database';
 
 expect.extend(matchers);
 
-describe('Users Endpoint -> Sign In', () => {
+describe('Auth -> Sign In', () => {
   beforeAll(async (done) => {
     const mongod = new MongoMemoryServer();
     const connectionString = await mongod.getConnectionString();
@@ -30,7 +30,7 @@ describe('Users Endpoint -> Sign In', () => {
     done();
   });
 
-  it('When valid email and password on request to /sign-in, expect 200 and valid response body', async (done) => {
+  it('When valid email and password on request to /users/sign-in, expect 200 and valid response body', async (done) => {
     const testUserData = {
       nome: 'Johnny Test',
       email: 'johnny@mail.com',
@@ -61,7 +61,7 @@ describe('Users Endpoint -> Sign In', () => {
             },
           },
         },
-        _id: { type: 'string' },
+        id: { type: 'string' },
         data_criacao: { type: 'string' },
         data_atualizacao: { type: 'string' },
         ultimo_login: { type: 'string' },
@@ -71,7 +71,7 @@ describe('Users Endpoint -> Sign In', () => {
         'nome',
         'email',
         'telefones',
-        '_id',
+        'id',
         'data_criacao',
         'data_atualizacao',
         'ultimo_login',
@@ -80,15 +80,16 @@ describe('Users Endpoint -> Sign In', () => {
     };
 
     await request(app)
-      .post('/sign-up')
+      .post('/users/sign-up')
       .send(testUserData);
 
     const response = await request(app)
-      .post('/sign-in')
+      .post('/users/sign-in')
       .send(validLoginCredentials);
 
     expect(response.status).toBe(200);
     expect(response.body).toMatchSchema(validResponseSchema);
+    expect(response.body).not.toHaveProperty('senha');
     done();
   });
 
@@ -99,7 +100,7 @@ describe('Users Endpoint -> Sign In', () => {
     };
 
     const response = await request(app)
-      .post('/sign-in')
+      .post('/users/sign-in')
       .send(invalidLoginCredentials);
 
     expect(response.status).toBe(401);
@@ -121,7 +122,7 @@ describe('Users Endpoint -> Sign In', () => {
     };
 
     await request(app)
-      .post('/sign-up')
+      .post('/users/sign-up')
       .send(testUserData);
 
     const invalidLoginCredentials = {
@@ -130,7 +131,7 @@ describe('Users Endpoint -> Sign In', () => {
     };
 
     const response = await request(app)
-      .post('/sign-in')
+      .post('/users/sign-in')
       .send(invalidLoginCredentials);
 
     expect(response.status).toBe(401);

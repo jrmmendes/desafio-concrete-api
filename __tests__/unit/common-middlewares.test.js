@@ -1,6 +1,6 @@
-import requestHandler from '../../src/middlewares/requestHandler';
-import errorHandler from '../../src/middlewares/errorHandler';
-import notFoundHandler from '../../src/middlewares/notFoundHandler';
+import requestHandler from '../../src/helpers/requestHandler';
+import errorHandler from '../../src/helpers/errorHandler';
+import notFoundHandler from '../../src/helpers/notFoundHandler';
 
 describe('Request Handler -> Sending Responses ', () => {
   it('When the response has defined locals.status, expect res.status method to be called', () => {

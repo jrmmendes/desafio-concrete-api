@@ -4,14 +4,13 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 
 import app from '../../src/app';
-import model from '../../src/models/user-model';
 import initConnection from '../../src/config/database';
 
 expect.extend(matchers);
 
 const validResponseSchema = {
   properties: {
-    _id: { type: 'string' },
+    id: { type: 'string' },
     nome: { type: 'string' },
     email: { type: 'string' },
     telefones: {
@@ -32,7 +31,7 @@ const validResponseSchema = {
     'nome',
     'email',
     'telefones',
-    '_id',
+    'id',
     'data_criacao',
     'data_atualizacao',
     'ultimo_login',
@@ -40,7 +39,7 @@ const validResponseSchema = {
   ],
 };
 
-describe('Users -> Sign Up', () => {
+describe('Auth -> Sign Up', () => {
   beforeAll(async (done) => {
     const mongod = new MongoMemoryServer();
     const connectionString = await mongod.getConnectionString();
@@ -62,7 +61,7 @@ describe('Users -> Sign Up', () => {
     done();
   });
 
-  it('When POST to /sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
+  it('When POST to /users/sign-up has valid payload, expect 201 and response with the created user info', async (done) => {
     const testUserData = {
       nome: 'Luke',
       email: 'luke@skywalker.com',
@@ -75,11 +74,12 @@ describe('Users -> Sign Up', () => {
       ],
     };
     const response = await request(app)
-      .post('/sign-up')
+      .post('/users/sign-up')
       .send(testUserData);
 
     expect(response.status).toBe(201);
     expect(response.body).toMatchSchema(validResponseSchema);
+    expect(response.body).not.toHaveProperty('senha');
     done();
   });
 
@@ -96,21 +96,17 @@ describe('Users -> Sign Up', () => {
       ],
     };
 
-    const resp1 = await request(app)
-      .post('/sign-up')
+    await request(app)
+      .post('/users/sign-up')
       .send(testUserData);
 
     const response = await request(app)
-      .post('/sign-up')
+      .post('/users/sign-up')
       .send(testUserData);
 
     expect(response.status).toBe(400);
     expect(response.body).toHaveProperty('mensagem');
     expect(response.body.mensagem).toBe('E-mail já existente');
-
-    const { _id: userId } = resp1.body;
-    await model.findByIdAndRemove(userId);
-
     done();
   });
 });
