@@ -2,22 +2,23 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import passport from 'passport';
 
-import errorHandler from './middlewares/errorHandler';
-import notFoundHandler from './middlewares/notFoundHandler';
-import requestHandler from './middlewares/requestHandler';
+import errorHandler from './helpers/errorHandler';
+import notFoundHandler from './helpers/notFoundHandler';
+import requestHandler from './helpers/requestHandler';
 
-import initPassport from './config/passport';
+import initSwagger from './config/swagger';
+import settings from './config/settings';
+
 import userRoutes from './routes/users';
 
 class ApplicationController {
   constructor() {
-    initPassport(passport);
-
     this.app = express();
     this.middlewares();
     this.routes();
+
+    if (settings.get('env') !== 'test') initSwagger('/', this.app);
 
     this.app.use(notFoundHandler);
     this.app.use(errorHandler);
