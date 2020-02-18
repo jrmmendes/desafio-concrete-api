@@ -29,6 +29,10 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  token: {
+    type: String,
+    required: true,
+  },
 }, {
   timestamps: { createdAt: 'data_criacao', updatedAt: 'data_atualizacao' },
   versionKey: false,
