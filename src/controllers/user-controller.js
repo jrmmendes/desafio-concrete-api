@@ -1,10 +1,56 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 
-import settings from '../config/settings';
 import model from '../models/user-model';
+import generateJwt from '../utils/generateJwt';
 
 export default {
+  search: async (req, res, next) => {
+    try {
+      const { accessToken } = req;
+
+      if (!accessToken) {
+        return next({
+          status: 401,
+          message: 'Não autorizado',
+        });
+      }
+
+      const { id: userId } = req.param;
+      const user = await model.findById(userId);
+
+      if (user.token !== accessToken) {
+        return next({
+          status: 401,
+          message: 'Não autorizado',
+        });
+      }
+
+      const minutesSinceLastLogin = (Date.now() - user.ultimo_login) / (60 * 1000);
+
+      if (minutesSinceLastLogin >= 30) {
+        return next({
+          status: 401,
+          message: 'Sessão inválida',
+        });
+      }
+
+      res.locals = {
+        status: 200,
+        data: {
+          nome: user.nome,
+          email: user.email,
+          telefones: user.telefones,
+        },
+      };
+
+      return next();
+    } catch (error) {
+      return next({
+        status: 500,
+        message: error.message,
+      });
+    }
+  },
   signIn: async (req, res, next) => {
     try {
       const { email, senha } = req.body;
@@ -27,20 +73,20 @@ export default {
         });
       }
 
-      const userData = user.toObject();
-      const { appSecret, tokenExpirationTime } = settings.get('security');
-      const { _id: userId } = userData;
-
-      const token = jwt.sign({ userId }, appSecret, {
-        expiresIn: tokenExpirationTime,
-      });
+      user.set('ultimo_login', Date.now());
 
       res.locals = {
         ...res.locals,
         status: 200,
         data: {
-          ...userData,
-          token,
+          id: user._id,
+          nome: user.nome,
+          email: user.email,
+          ultimo_login: user.ultimo_login,
+          data_criacao: user.data_criacao,
+          data_atualizacao: user.data_atualizacao,
+          telefones: user.telefones,
+          token: user.token,
         },
       };
 
@@ -71,26 +117,27 @@ export default {
         });
       }
 
+      const token = generateJwt({ nome, email });
+
       const newUser = await model.create({
         nome,
         email,
         telefones,
         senha: hash,
-      });
-
-      const userData = newUser.toObject();
-      const { appSecret, tokenExpirationTime } = settings.get('security');
-      const { _id: userId } = userData;
-
-      const token = jwt.sign({ userId }, appSecret, {
-        expiresIn: tokenExpirationTime,
+        token,
       });
 
       res.locals = {
         status: 201,
         data: {
-          ...userData,
-          token,
+          id: newUser._id,
+          nome: newUser.nome,
+          email: newUser.email,
+          ultimo_login: newUser.ultimo_login,
+          data_criacao: newUser.data_criacao,
+          data_atualizacao: newUser.data_atualizacao,
+          telefones: newUser.telefones,
+          token: newUser.token,
         },
       };
 
