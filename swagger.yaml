@@ -64,7 +64,7 @@ paths:
                   - numero: '8877-9988'
                     ddd: '11'
       responses:
-        200:
+        201:
           description: 'Usuário criado com sucesso'
           content:
             application/json:

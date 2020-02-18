@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 
 import model from '../models/user-model';
 import generateJwt from '../utils/generateJwt';
-import serializeUserData from '../utils/serialize-user-data';
 
 export default {
   search: async (req, res, next) => {
@@ -11,7 +10,7 @@ export default {
       const { id } = req.params;
       const user = await model.findById(id);
 
-      const isTokenValid = await bcrypt.compare(user.token, accessToken);
+      const isTokenValid = await bcrypt.compare(accessToken, user.token);
 
       if (isTokenValid) {
         const minutesSinceLastLogin = (
@@ -27,7 +26,15 @@ export default {
         }
         res.locals = {
           status: 200,
-          data: serializeUserData(user),
+          data: {
+            id: user._id,
+            nome: user.nome,
+            email: user.email,
+            ultimo_login: user.ultimo_login,
+            data_criacao: user.data_criacao,
+            data_atualizacao: user.data_atualizacao,
+            telefones: user.telefones,
+          },
         };
         return next();
       }
@@ -65,8 +72,8 @@ export default {
         });
       }
 
-      const newToken = generateJwt({ email, senha });
-      const tokenHash = await bcrypt.hash(newToken, 10);
+      const token = generateJwt({ email, senha });
+      const tokenHash = await bcrypt.hash(token, 10);
 
       user.set('ultimo_login', Date.now());
       user.set('token', tokenHash);
@@ -75,7 +82,16 @@ export default {
       res.locals = {
         ...res.locals,
         status: 200,
-        data: serializeUserData(user),
+        data: {
+          id: user._id,
+          nome: user.nome,
+          email: user.email,
+          ultimo_login: user.ultimo_login,
+          data_criacao: user.data_criacao,
+          data_atualizacao: user.data_atualizacao,
+          telefones: user.telefones,
+          token,
+        },
       };
 
       return next();
@@ -105,17 +121,28 @@ export default {
         });
       }
       const token = generateJwt({ nome, email });
+      const tokenHash = await bcrypt.hash(token, 10);
+
       const newUser = await model.create({
         nome,
         email,
         telefones,
         senha: hash,
-        token,
+        token: tokenHash,
       });
 
       res.locals = {
         status: 201,
-        data: serializeUserData(newUser),
+        data: {
+          id: newUser._id,
+          nome: newUser.nome,
+          email: newUser.email,
+          ultimo_login: newUser.ultimo_login,
+          data_criacao: newUser.data_criacao,
+          data_atualizacao: newUser.data_atualizacao,
+          telefones: newUser.telefones,
+          token,
+        },
       };
 
       return next();
