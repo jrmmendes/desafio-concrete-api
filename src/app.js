@@ -7,9 +7,7 @@ import bearerToken from 'express-bearer-token';
 import errorHandler from './helpers/errorHandler';
 import notFoundHandler from './helpers/notFoundHandler';
 import requestHandler from './helpers/requestHandler';
-
 import initSwagger from './config/swagger';
-
 import userRoutes from './routes/users';
 
 class ApplicationController {
@@ -37,7 +35,7 @@ class ApplicationController {
     this.app.get('/', (req, res, next) => {
       res.status(200).json({
         server_status: 'online',
-        docs: `${req.hostname}/docs`,
+        docs: `${req.protocol}://${req.hostname}/docs`,
       });
       next();
     });

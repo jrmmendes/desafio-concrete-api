@@ -14,6 +14,8 @@ paths:
         required: true
         description: ID do usuário
     get:
+      tags: 
+        - Users
       security:
         - bearerAuth: []
       summary: Obter informações sobre um usuário cadastrado
@@ -35,6 +37,8 @@ paths:
 
   '/users/sign-up':
     post:
+      tags: 
+        - Users
       summary: Cadastrar novo usuário.
       requestBody:
         required: true
@@ -72,6 +76,8 @@ paths:
 
   '/users/sign-in':
     post:
+      tags: 
+        - Users
       summary: Obter token de acesso.
       requestBody:
         required: true

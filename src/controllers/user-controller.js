@@ -10,6 +10,13 @@ export default {
       const { id } = req.params;
       const user = await model.findById(id);
 
+      if (!user) {
+        return next({
+          status: 404,
+          message: 'Usuário não encontrado',
+        });
+      }
+
       const isTokenValid = await bcrypt.compare(accessToken, user.token);
 
       if (isTokenValid) {
@@ -53,6 +60,13 @@ export default {
   signIn: async (req, res, next) => {
     try {
       const { email, senha } = req.body;
+
+      if (!email || !senha) {
+        return next({
+          status: 401,
+          message: 'Usuário e/ou senha inválidos',
+        });
+      }
 
       const user = await model.findOne({ email });
 
