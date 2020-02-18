@@ -34,6 +34,14 @@ class ApplicationController {
   }
 
   routes() {
+    this.app.get('/', (req, res, next) => {
+      res.status(200).json({
+        server_status: 'online',
+        docs: `${req.hostname}/docs`,
+      });
+      next();
+    });
+
     this.app.use(userRoutes);
   }
 }
