@@ -7,6 +7,7 @@ export default {
   search: async (req, res, next) => {
     try {
       const { accessToken } = req;
+      console.log(accessToken);
 
       if (!accessToken) {
         return next({
@@ -15,8 +16,10 @@ export default {
         });
       }
 
-      const { id: userId } = req.param;
-      const user = await model.findById(userId);
+      const { id } = req.params;
+      const user = await model.findById(id);
+
+      console.log(user.token);
 
       if (user.token !== accessToken) {
         return next({
@@ -25,9 +28,14 @@ export default {
         });
       }
 
-      const minutesSinceLastLogin = (Date.now() - user.ultimo_login) / (60 * 1000);
+      const minutesSinceLastLogin = (
+        Date.now()
+        - user.ultimo_login.getTime()
+      ) / 60000;
 
-      if (minutesSinceLastLogin >= 30) {
+      console.log(minutesSinceLastLogin);
+
+      if (minutesSinceLastLogin > 30) {
         return next({
           status: 401,
           message: 'Sessão inválida',
@@ -73,7 +81,11 @@ export default {
         });
       }
 
+      const newToken = generateJwt({ email, senha });
+
       user.set('ultimo_login', Date.now());
+      user.set('token', newToken);
+      user.save();
 
       res.locals = {
         ...res.locals,

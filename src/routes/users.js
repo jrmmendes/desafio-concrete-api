@@ -1,9 +1,14 @@
-import bearerToken from 'express-bearer-token';
 import { Router } from 'express';
 
 import userController from '../controllers/user-controller';
 
 const router = Router();
+
+router
+  .route('/users/:id')
+  .get(
+    userController.search,
+  );
 
 router
   .route('/users/sign-up')
@@ -17,11 +22,5 @@ router
     userController.signIn,
   );
 
-router
-  .route('/users/:id')
-  .post(
-    bearerToken({ reqKey: 'accessToken' }),
-    userController.search,
-  );
 
 export default router;

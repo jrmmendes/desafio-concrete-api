@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
+import bearerToken from 'express-bearer-token';
 
 import errorHandler from './helpers/errorHandler';
 import notFoundHandler from './helpers/notFoundHandler';
@@ -18,7 +19,7 @@ class ApplicationController {
     this.middlewares();
     this.routes();
 
-    if (settings.get('env') !== 'test') initSwagger('/', this.app);
+    if (settings.get('env') !== 'test') initSwagger('/docs', this.app);
 
     this.app.use(notFoundHandler);
     this.app.use(errorHandler);
@@ -30,6 +31,7 @@ class ApplicationController {
     this.app.use(helmet());
     this.app.use(cors());
     this.app.use(morgan('dev'));
+    this.app.use(bearerToken({ reqKey: 'accessToken' }));
   }
 
   routes() {

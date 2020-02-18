@@ -1,3 +1,145 @@
 openapi: '3.0.0'
 info:
   title: 'Desafio - Backend'
+  version: '1.0'
+  description:
+    - API simples para gerenciamento de usuários.
+paths:
+  '/users/{id}':
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: ID do usuário
+    get:
+      security:
+        - bearerAuth: []
+      summary: Obter informações sobre um usuário cadastrado
+      responses:
+        200:
+          description: 'Usuário encontrado'
+          content:
+            application/json:
+              $ref: '#components/schemas/user'
+        401:
+          description: 'Não autorizado'
+          content:
+            application/json:
+              schema:
+                properties:
+                  mensagem:
+                    type: string
+                    example: 'Não autorizado'
+
+  '/users/sign-up':
+    post:
+      summary: Cadastrar novo usuário.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                nome:
+                  type: string
+                email:
+                  type: string
+                senha:
+                  type: string
+                telefones:
+                  type: array
+                  items:
+                    properties:
+                      numero:
+                        type: string
+                      ddd:
+                        type: string
+              example:
+                nome: 'Luke Skywalker'
+                email: 'luke@light.com'
+                senha: 'betheforcewithyou'
+                telefones:
+                  - numero: '8877-9988'
+                    ddd: '11'
+      responses:
+        200:
+          description: 'Usuário criado com sucesso'
+          content:
+            application/json:
+              $ref: '#components/schemas/user'
+
+  '/users/sign-in':
+    post:
+      summary: Obter token de acesso.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example: 'luke@light.com'
+                senha:
+                  type: string
+                  example: 'betheforcewithyou'
+      responses:
+        200:
+          description: 'Login realizado com sucesso'
+          content:
+            application/json:
+              $ref: '#components/schemas/user'
+        401:
+          description: 'Os dados informados não são válidos'
+          content:
+            application/json:
+              schema:
+                properties:
+                  mensagem:
+                    type: string
+                    example: 'Usuário e/ou senha inválidos'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    user:
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        email:
+          type: string
+        telefones:
+          type: array
+          items:
+            properties:
+              numero:
+                type: string
+              ddd:
+                type: string
+        data_criacao:
+          type: string
+        data_atualizacao:
+          type: string
+        ultimo_login:
+          type: string
+        token:
+          type: string
+      example:
+        id: '3b241101-e2bb-4255-8caf-4136c566a962'
+        nome: 'Luke Skywalker'
+        email: 'luke@light.com'
+        telefones:
+          - numero: '8877-9988'
+            ddd: '11'
+        data_criacao: '1582042560490'
+        data_atualizacao: '1582042560490'
+        ultimo_login: '1582042560490'
+        token: 'eyJhbGciOiJIU9.e0IjoxNTE2MjM5MDIyfQ.yJV_adQssw5c'
