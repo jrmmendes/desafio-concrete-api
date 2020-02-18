@@ -19,7 +19,8 @@ class ApplicationController {
     this.middlewares();
     this.routes();
 
-    if (settings.get('env') !== 'test') initSwagger('/docs', this.app);
+    // if (settings.get('env') !== 'test') 
+    initSwagger('/', this.app);
 
     this.app.use(notFoundHandler);
     this.app.use(errorHandler);

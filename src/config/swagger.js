@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 
 export default (url = '/docs', express) => {
   const swaggerDocument = YAML.load(path.join(__dirname, '../../swagger.yaml'));
-  express.use(
+  express.get(
     url,
     swaggerUi.serve,
     swaggerUi.setup(swaggerDocument),
