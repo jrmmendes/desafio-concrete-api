@@ -2,12 +2,12 @@ import bcrypt from 'bcryptjs';
 
 import model from '../models/user-model';
 import generateJwt from '../utils/generateJwt';
+import serializeUserData from '../utils/serialize-user-data';
 
 export default {
   search: async (req, res, next) => {
     try {
       const { accessToken } = req;
-      console.log(accessToken);
 
       if (!accessToken) {
         return next({
@@ -19,9 +19,7 @@ export default {
       const { id } = req.params;
       const user = await model.findById(id);
 
-      console.log(user.token);
-
-      if (user.token !== accessToken) {
+      if (!await bcrypt.compare(user.token, accessToken)) {
         return next({
           status: 401,
           message: 'Não autorizado',
@@ -44,11 +42,7 @@ export default {
 
       res.locals = {
         status: 200,
-        data: {
-          nome: user.nome,
-          email: user.email,
-          telefones: user.telefones,
-        },
+        data: serializeUserData(user),
       };
 
       return next();
@@ -82,24 +76,16 @@ export default {
       }
 
       const newToken = generateJwt({ email, senha });
+      const newTokenHash = await bcrypt.hash(newToken);
 
       user.set('ultimo_login', Date.now());
-      user.set('token', newToken);
+      user.set('token', newTokenHash);
       user.save();
 
       res.locals = {
         ...res.locals,
         status: 200,
-        data: {
-          id: user._id,
-          nome: user.nome,
-          email: user.email,
-          ultimo_login: user.ultimo_login,
-          data_criacao: user.data_criacao,
-          data_atualizacao: user.data_atualizacao,
-          telefones: user.telefones,
-          token: user.token,
-        },
+        data: serializeUserData(user),
       };
 
       return next();
@@ -128,9 +114,7 @@ export default {
           message: 'E-mail já existente',
         });
       }
-
       const token = generateJwt({ nome, email });
-
       const newUser = await model.create({
         nome,
         email,
@@ -141,16 +125,7 @@ export default {
 
       res.locals = {
         status: 201,
-        data: {
-          id: newUser._id,
-          nome: newUser.nome,
-          email: newUser.email,
-          ultimo_login: newUser.ultimo_login,
-          data_criacao: newUser.data_criacao,
-          data_atualizacao: newUser.data_atualizacao,
-          telefones: newUser.telefones,
-          token: newUser.token,
-        },
+        data: serializeUser(newUser),
       };
 
       return next();
